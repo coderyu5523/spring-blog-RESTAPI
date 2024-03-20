@@ -46,10 +46,11 @@ public class BoardService {
 
     }
 
-    public List<Board> 글목록조회() {
+    public List<BoardResponse.MainDTO> 글목록조회() {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         List<Board> boardList = boardJPARepository.findAll(sort);
-        return boardList;
+
+        return boardList.stream().map(board -> new BoardResponse.MainDTO(board)).toList();
     }
 
     public Board 글상세보기(int boardId, User sessionUser) {
