@@ -39,25 +39,9 @@ public class UserController {
        return "redirect:/";
     }
 
-    @GetMapping("/join-form")
-    public String joinForm() {
-        return "user/join-form";
-    }
 
-    @GetMapping("/login-form")
-    public String loginForm() {
-        return "user/login-form";
-    }
+    //todo : 회원정보조회 API 필요
 
-    @GetMapping("/user/update-form")
-    public String updateForm(HttpServletRequest request) {
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        User user =  userService.회원수정폼(sessionUser.getId());
-
-        request.setAttribute("user",user);
-
-        return "user/update-form";
-    }
     @PostMapping("/user/update")
     public String update(UserRequest.UpdateDTO requestDTO){
         User sessionUser = (User) session.getAttribute("sessionUser");

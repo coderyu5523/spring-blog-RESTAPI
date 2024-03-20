@@ -5,11 +5,8 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import shop.mtcoding.blog._core.err.exception.Exception403;
-import shop.mtcoding.blog._core.err.exception.Exception404;
 import shop.mtcoding.blog.user.User;
 
-import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -17,6 +14,10 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService ;
     private final HttpSession session;
+
+    // todo : 글목록조회 api 필요
+    //todo : 글 상세보기 api 필요
+    // todo : 글조회 api 필요
 
     @PostMapping("/board/save")
     public String save(BoardRequest.SaveDTO requestDTO){
@@ -27,35 +28,6 @@ public class BoardController {
         return "redirect:/";
     }
 
-    @GetMapping({ "/"})
-    public String index(HttpServletRequest request) {
-        List<Board> boardList = boardService.글목록조회();
-        request.setAttribute("boardList",boardList);
-        return "index"; // 리퀘스트디스패쳐 방식으로 가방을 내부적으로 전달.
-    }
-
-    @GetMapping("/board/save-form")
-    public String saveForm() {
-        return "board/save-form";
-    }
-
-    @GetMapping("/board/{id}")
-    public String detail(@PathVariable Integer id,HttpServletRequest request) {  // int 를 쓰면 값이 없으면 0, Integer 를 넣으면 값이 없을 때 null 값이 들어옴.
-//      Board board = boardReposiroty.findByIdJoinUser(id); 이건 조인해서 하는 것
-        User sessionUser = (User) session.getAttribute("sessionUser");
-
-        Board board = boardService.글상세보기(id,sessionUser);
-        request.setAttribute("board", board);
-
-        return "board/detail";
-    }
-
-    // 보드디테일 제이슨 보기
-    @GetMapping("/v2/board/{id}")
-    public @ResponseBody Board detailV2(@PathVariable Integer id, HttpServletRequest request) {
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        return boardService.글상세보기(id, sessionUser);
-    }
 
 //    @PostMapping("/board/{id}/delete")
     @RequestMapping(value = "/board/{id}/delete", method = {RequestMethod.GET, RequestMethod.POST})
@@ -66,15 +38,6 @@ public class BoardController {
         return "redirect:/";
     }
 
-    @GetMapping("/board/{id}/update-form")
-     public String updateForm(@PathVariable Integer id,HttpServletRequest request){
-        User sessionUser = (User) session.getAttribute("sessionUser");
-
-        Board board = boardService.글수정폼(id,sessionUser.getId());
-        request.setAttribute("board",board);
-
-        return "board/update-form";
-    }
 
     @PostMapping("/board/{id}/update")
     public String update(@PathVariable Integer id,BoardRequest.UpdateDTO requestDTO){
