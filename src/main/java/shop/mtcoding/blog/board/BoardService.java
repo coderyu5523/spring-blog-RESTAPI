@@ -17,12 +17,12 @@ public class BoardService {
     private final BoardJPARepository boardJPARepository;
 
     @Transactional
-    public void 글쓰기(BoardRequest.SaveDTO requestDTO, User sessionUser) {
-        boardJPARepository.save(requestDTO.toEntity(sessionUser));
+    public Board 글쓰기(BoardRequest.SaveDTO requestDTO, User sessionUser) {
+      return  boardJPARepository.save(requestDTO.toEntity(sessionUser));
     }
 
     @Transactional
-    public void 글조회(int boardId, int sessionUserId, BoardRequest.UpdateDTO requestDTO) {
+    public Board 글조회(int boardId, int sessionUserId) {
         //조회 및 예외처리
         Board board = boardJPARepository.findById(boardId)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다."));
@@ -31,19 +31,10 @@ public class BoardService {
             throw new Exception403("게시글을 수정할 권한이 없습니다");
         }
 
-        board.setTitle(requestDTO.getTitle());
-        board.setContent((requestDTO.getContent()));
-    }
-
-    public Board 글수정폼(int boardId, int sessionUserId) {
-        Board board = boardJPARepository.findById(boardId)
-                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다."));
-        if (sessionUserId != board.getUser().getId()) {
-            throw new Exception403("게시글을 수정할 권한이 없습니다");
-        }
 
         return board;
     }
+
 
     @Transactional
     public void 글삭제(int boardId, int sessionUserId) {
